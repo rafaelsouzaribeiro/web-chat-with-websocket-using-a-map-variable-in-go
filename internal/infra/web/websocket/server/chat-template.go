@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/rafaelsouzaribeiro/Web-chat-with-WebSocket-using-a-map-variable-in-Go/web/templates"
+	"github.com/rafaelsouzaribeiro/web-chat-with-WebSocket-using-a-map-variable-in-go/web/templates"
 )
 
 func (server *Server) serveChat(w http.ResponseWriter, r *http.Request) {
