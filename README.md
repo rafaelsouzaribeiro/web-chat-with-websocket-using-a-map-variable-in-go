@@ -1,5 +1,6 @@
 Web chat with WebSocket and notifications for logged-in and logged-out users and using emojis in Go and JavaScript. 
 <br />
+Now, if you want to use a chat with messages and track connected and disconnected users using Redis, check out this <a href="https://github.com/rafaelsouzaribeiro/web-chat-websocket-in-golang">project</a>
 <br />
 1 - Run: cmd/main.go<br />
 2 - access via browser: http://localhost:8080/chat<br />
