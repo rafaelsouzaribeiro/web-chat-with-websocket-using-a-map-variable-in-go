@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat {
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+        #message {
+            width: calc(100% - 50px);
+        }
+        #username {
+            width: calc(100% - 50px);
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .emoji-picker {
+            position: relative;
+        }
+        
+        .emoji-container {
+            display: none;
+            background-color: #f1f1f1;
+            width: calc(100% - 50px);
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+        
+        .emoji-container .emoji {
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .emoji-container .emoji:hover {
+            background-color: #ddd;
+        }
+
+        .emoji{
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat"></div>
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username">
+        <button onclick="connect()" id="connect">Connect</button>
+    </div>
+    <div class="emoji-picker">
+        <div class="emoji-container"></div>
+        <input type="text" id="message" class="emoji-input" placeholder="Type a message...">
+    </div>
+    <button onclick="sendMessage('', 'message')" id="send">Send</button>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const messageInput = document.getElementById('message');
+        const usernameInput = document.getElementById('username');
+        let socket;
+        const webSocketURL = "{{.WebSocketURL}}";
+
+        window.addEventListener('beforeunload', function (event) {
+                event.preventDefault(); 
+                event.returnValue = ''; 
+        });
+
+        function connect() {
+            const username = usernameInput.value;
+            if (!username) {
+                alert('Please enter a username.');
+                return;
+            }
+
+            
+            if (socket) {
+                chat.innerHTML=""
+                socket.close();
+            }
+
+            socket = new WebSocket(webSocketURL);
+
+            socket.onopen = function() {
+                console.log('Connected to the server');
+                sendMessage('connected', 'connect');
+            };
+
+            socket.onmessage = function(event) {
+                const msg = JSON.parse(event.data);
+
+                if (msg.username && msg.message) {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message');
+                    messageElement.innerHTML = `${msg.username}: ${msg.message}`;
+                    chat.appendChild(messageElement);
+                    chat.scrollTop = chat.scrollHeight;
+                }
+            };
+
+            socket.onclose = function() {
+                chat.innerHTML=""
+                console.log('Disconnected from the server');
+            };
+
+            socket.onerror = function(error) {
+                console.log('WebSocket error: ' + error);
+            };
+        }
+
+        function sendMessage(message, type) {
+            if (!message) {
+                message = messageInput.value;
+            }
+            const username = usernameInput.value;
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ Username: username, Message: message, Type: type }));
+               // messageInput.value = '';
+            } else {
+                alert('WebSocket is not connected.');
+            }
+        }
+
+
+        const emojiContainer = document.querySelector(".emoji-container");
+        const emojiInput = document.querySelector(".emoji-input");
+        
+        const emojis = ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", 
+        "😇","💗","💔","❤️‍🔥","❤","😍","😴","😌","😌","🤤","😱","😭","😩","🤬","🤡","👹","👺","👻","👽"
+        ,"👾","🙌","🤝","🙏","👍","👎"];
+        
+        emojis.forEach((emoji) => {
+            const emojiDiv = document.createElement("div");
+            emojiDiv.classList.add("emoji");
+            emojiDiv.innerText = emoji;
+            emojiContainer.appendChild(emojiDiv);
+        });
+        
+        emojiInput.addEventListener("focus", () => {
+            emojiContainer.style.display = "block";
+        });
+        
+        emojiInput.addEventListener("blur", () => {
+            setTimeout(() => {
+            emojiContainer.style.display = "none";
+            }, 200);
+        });
+        
+        emojiContainer.addEventListener("click", (e) => {
+            emojiInput.value += e.target.innerText;
+        });
+
+    </script>
+</body>
+</html>
