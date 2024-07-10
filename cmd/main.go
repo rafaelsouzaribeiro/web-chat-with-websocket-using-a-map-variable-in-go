@@ -4,11 +4,11 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/rafaelsouzaribeiro/web-chat-with-WebSocket-using-a-map-variable-in-go/configs"
+	"github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go/configs"
 
 	"github.com/spf13/viper"
 
-	"github.com/rafaelsouzaribeiro/web-chat-with-WebSocket-using-a-map-variable-in-go/internal/infra/web/websocket/server"
+	"github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go/internal/infra/web/websocket/server"
 )
 
 func main() {

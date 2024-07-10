@@ -1,4 +1,4 @@
-module github.com/rafaelsouzaribeiro/web-chat-with-WebSocket-using-a-map-variable-in-go
+module github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go
 
 go 1.22.0
 

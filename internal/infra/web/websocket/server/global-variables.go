@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/gorilla/websocket"
-	"github.com/rafaelsouzaribeiro/web-chat-with-WebSocket-using-a-map-variable-in-go/internal/usecase/dto"
+	"github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go/internal/usecase/dto"
 )
 
 var broadcast = make(chan dto.Payload)
