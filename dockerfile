@@ -1,25 +1,15 @@
-FROM golang:1.22.0 AS builder
-
+FROM golang:1.23 AS builder
 WORKDIR /app
-
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
 COPY . .
 
+RUN go mod download
 RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o main ./cmd/main.go
 
-FROM alpine:latest
+FROM scratch
+WORKDIR /app
 
-WORKDIR /root/
 
-ENV HOST_NAME=0.0.0.0
-ENV WS_ENDPOINT=/ws
-ENV PORT=8080
-
-COPY --from=builder /app/main .
-
-EXPOSE $PORT
+COPY --from=builder /app/main /app/
+COPY --from=builder /app/cmd/.env /app/
 
 CMD ["./main"]

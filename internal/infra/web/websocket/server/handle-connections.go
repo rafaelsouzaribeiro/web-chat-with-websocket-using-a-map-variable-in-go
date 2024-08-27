@@ -38,9 +38,9 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 			buffer = append(buffer, disconnectionMessage)
 			mu.Unlock()
 
+			deleteUserByUserName(username, true)
 			broadcast <- disconnectionMessage
 
-			deleteUserByUserName(username, true)
 			conn.Close()
 		}
 	}()
@@ -87,7 +87,6 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 
 			buffer = append(buffer, systemMessage)
 			mu.Unlock()
-
 			broadcast <- systemMessage
 		}
 	}

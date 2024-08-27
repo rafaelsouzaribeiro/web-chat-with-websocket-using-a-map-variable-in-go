@@ -6,36 +6,23 @@ import (
 
 	"github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go/configs"
 
-	"github.com/spf13/viper"
-
 	"github.com/rafaelsouzaribeiro/web-chat-with-websocket-using-a-map-variable-in-go/internal/infra/web/websocket/server"
 )
 
 func main() {
 
-	viper.AutomaticEnv()
-	hostname := viper.GetString("HOST_NAME")
-	wsEndpoint := viper.GetString("WS_ENDPOINT")
-	portStr := viper.GetString("PORT")
+	Conf, err := configs.LoadConfig("./")
 
-	if hostname == "" {
-		Conf, err := configs.LoadConfig("../")
-
-		if err != nil {
-			panic(err)
-		}
-
-		hostname = Conf.HostName
-		wsEndpoint = Conf.WsEndPoint
-		portStr = Conf.Port
+	if err != nil {
+		panic(err)
 	}
 
-	port, err := strconv.Atoi(portStr)
+	port, err := strconv.Atoi(Conf.Port)
 	if err != nil {
 		log.Fatalf("Invalid port: %v", err)
 	}
 
-	svc := server.NewServer(hostname, wsEndpoint, port)
+	svc := server.NewServer(Conf.HostName, Conf.WsEndPoint, port)
 	go svc.ServerWebsocket()
 	select {}
 
